@@ -14,6 +14,18 @@ STOCK_INCREASE_PERCENT_INDEX = 5
 STOCK_NET_INDEX = 6  # 净额
 
 
+def format_east_money_data(element=WebElement):
+    tex = element.text
+    data = tex.split(" ")
+    print(data[0], ":", data[STOCK_NAME_INDEX], "|", data[STOCK_INCREASE_PERCENT_INDEX], "|", data[STOCK_NET_INDEX])
+
+
+# List[WebElement]
+def iteration_web_elements(elements):
+    for ele in elements:
+        format_east_money_data(ele)
+
+
 class SpiderForEastMoney(object):
     def __init__(self, url=""):
         options = Options()
@@ -37,7 +49,5 @@ class SpiderForEastMoney(object):
     def get_elements(self, xpath="") -> List[WebElement]:
         return self.Driver.find_elements(By.XPATH, xpath)
 
-    def format_dfcf_data(self, element=WebElement):
-        tex = element.text
-        data = tex.split(" ")
-        print(data[0], ":", data[STOCK_NAME_INDEX], "|", data[STOCK_INCREASE_PERCENT_INDEX], "|", data[STOCK_NET_INDEX])
+    def quit(self):
+        self.Driver.quit()
