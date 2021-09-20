@@ -48,13 +48,11 @@ def build_east_money_model(element=WebElement):
     data = tex.split(" ")
 
     without_percent = bk_trade.parse_up_down_percent(data[STOCK_PERCENT_INDEX])
-    money_dict = bk_trade.parse_money(data[STOCK_MONEY_INDEX])
 
     model = bk_trade.BkTrade(
         data[STOCK_NAME_INDEX],
         without_percent,
-        money_dict[bk_trade.MONEY_KET],
-        money_dict[bk_trade.INCREASE_DECREASE_KEY],
+        data[STOCK_MONEY_INDEX],
         )
 
     print(json.dumps(model, default=bk_trade.bk_trade_to_dict, ensure_ascii=False))
