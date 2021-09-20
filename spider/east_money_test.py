@@ -1,4 +1,4 @@
-from spider.my_spider import SpiderForEastMoney
+from spider.east_money import SpiderForEastMoney
 
 if __name__ == '__main__':
     url = 'https://data.eastmoney.com/bkzj/hy.html'

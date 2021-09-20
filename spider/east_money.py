@@ -1,3 +1,4 @@
+import json
 import time
 from typing import List
 
@@ -9,21 +10,60 @@ from selenium.webdriver.common.by import By
 # WebElement
 from selenium.webdriver.remote.webelement import WebElement
 
+import model.bk_trade as bk_trade
+
 STOCK_NAME_INDEX = 1
-STOCK_INCREASE_PERCENT_INDEX = 5
-STOCK_NET_INDEX = 6  # 净额
+STOCK_PERCENT_INDEX = 5
+STOCK_MONEY_INDEX = 6  # 净额
 
 
-def format_east_money_data(element=WebElement):
+def action():
+    url = 'https://data.eastmoney.com/bkzj/hy.html'
+    spider = SpiderForEastMoney(url)
+
+    first_page_elements = spider.get_elements("//table[@style='display: table;']/tbody/tr")
+
+    try:
+        iteration_web_elements(first_page_elements)
+    except Exception as e:
+        print(e)
+        exit(-1)
+
+    # next page
+    spider.get_element("//*[@id='dataview']/div[3]/div[1]/a[2]").click()
+    time.sleep(1)
+    second_page_elements = spider.get_elements("//table[@style='display: table;']/tbody/tr")
+
+    try:
+        iteration_web_elements(second_page_elements)
+    except Exception as e:
+        print(e)
+        exit(-1)
+
+    spider.quit()
+
+
+def build_east_money_model(element=WebElement):
     tex = element.text
     data = tex.split(" ")
-    print(data[0], ":", data[STOCK_NAME_INDEX], "|", data[STOCK_INCREASE_PERCENT_INDEX], "|", data[STOCK_NET_INDEX])
+
+    without_percent = bk_trade.parse_up_down_percent(data[STOCK_PERCENT_INDEX])
+    money_dict = bk_trade.parse_money(data[STOCK_MONEY_INDEX])
+
+    model = bk_trade.BkTrade(
+        data[STOCK_NAME_INDEX],
+        without_percent,
+        money_dict[bk_trade.MONEY_KET],
+        money_dict[bk_trade.INCREASE_DECREASE_KEY],
+        )
+
+    print(json.dumps(model, default=bk_trade.bk_trade_to_dict, ensure_ascii=False))
 
 
 # List[WebElement]
 def iteration_web_elements(elements):
     for ele in elements:
-        format_east_money_data(ele)
+        build_east_money_model(ele)
 
 
 class SpiderForEastMoney(object):
