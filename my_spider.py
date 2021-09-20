@@ -35,27 +35,21 @@ if __name__ == '__main__':
     })
 
     driver.get('https://data.eastmoney.com/bkzj/hy.html')
-    print(driver.title)
     try:
-        # element = driver.find_elements_by_xpath("//table[@class='m-table J-ajax-table']/tbody/tr/td[@class='tl']/a")
-        elementFromFirstPage = driver.find_elements_by_xpath("//table[@style='display: table;']/tbody/tr")
+        elementFromFirstPage = driver.find_elements(By.XPATH, "//table[@style='display: table;']/tbody/tr")
         count = 0
 
         for ele in elementFromFirstPage:
             count += 1
-            # print(count, ":", i.accessible_name)
             echoElement(ele)
     except Exception as e:
         print(e)
 
     # 下一页
     try:
-        aa = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@id='dataview']/div[3]/div[1]/a[2]"))
-        )
-        aa.click()
-        time.sleep(3)
-        elementFromSecondPage = driver.find_elements_by_xpath("//table[@style='display: table;']/tbody/tr")
+        driver.find_element(By.XPATH, "//*[@id='dataview']/div[3]/div[1]/a[2]").click()
+        time.sleep(1)
+        elementFromSecondPage = driver.find_elements(By.XPATH, "//table[@style='display: table;']/tbody/tr")
 
         for ele2 in elementFromSecondPage:
             count += 1
