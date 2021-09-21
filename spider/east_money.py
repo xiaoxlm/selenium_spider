@@ -3,6 +3,7 @@ import time
 
 # WebElement
 from selenium.webdriver.remote.webelement import WebElement
+from playhouse.shortcuts import model_to_dict
 
 import model.bk_trade as bk_trade
 import spider.spider as spi
@@ -44,13 +45,14 @@ def build_east_money_model(element=WebElement):
 
     without_percent = bk_trade.parse_up_down_percent(data[STOCK_PERCENT_INDEX])
 
-    model = bk_trade.BkTrade(
+    obj = bk_trade.BkTrade(
         data[STOCK_NAME_INDEX],
         without_percent,
         data[STOCK_MONEY_INDEX],
         )
 
-    print(json.dumps(model, default=bk_trade.bk_trade_to_dict, ensure_ascii=False))
+    model = bk_trade.bk_trade_to_model(obj)
+    print(json.dumps(model_to_dict(model), ensure_ascii=False))
 
 
 # List[WebElement]

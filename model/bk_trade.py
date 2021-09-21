@@ -1,4 +1,5 @@
 import time
+from peewee import *
 from decimal import *
 
 INCREASE_FLAG = 1
@@ -31,18 +32,6 @@ class BkTrade(object):
         self.increase_decrease_flag = money_dict[INCREASE_DECREASE_KEY]
 
 
-def bk_trade_to_dict(bk: BkTrade) -> dict:
-    return {
-        'bk': bk.bk,
-        'up_down_percent': bk.up_down_percent,
-        'money_str': bk.money_str,
-        'money': bk.money,
-        'increase_decrease_flag': bk.increase_decrease_flag,
-        'time': bk.time,
-        'unit': bk.unit,
-    }
-
-
 def parse_up_down_percent(up_down_percent: str) -> float:
     without_percent = up_down_percent.replace("%", "")
     return float(without_percent)
@@ -73,3 +62,38 @@ def parse_money(money_str: str) -> dict:
     ret[MONEY_KET] = int(money_decimal)
 
     return ret
+
+
+# model
+
+mysql_db = MySQLDatabase('my_app', user='app', password='db_password',
+                         host='10.1.0.8', port=3306)
+
+tbl = "t_bk_trade"
+
+
+class BkTradeModel(Model):
+    id = IntegerField(primary_key=True)
+    bk = CharField()
+    up_down_percent = DecimalField()
+    money_str = CharField()
+    money = IntegerField()
+    increase_decrease_flag = IntegerField()
+    time = IntegerField()
+    unit = CharField()
+
+    class Meta:
+        database = mysql_db
+        table_name = tbl
+
+
+def bk_trade_to_model(bk: BkTrade) -> BkTradeModel:
+    return BkTradeModel(
+        bk=bk.bk,
+        up_down_percent=bk.up_down_percent,
+        money_str=bk.money_str,
+        money=bk.money,
+        increase_decrease_flag=bk.increase_decrease_flag,
+        time=bk.time,
+        unit=bk.unit,
+    )
