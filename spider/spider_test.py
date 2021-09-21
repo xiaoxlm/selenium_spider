@@ -1,11 +1,11 @@
-from spider.east_money import SpiderForEastMoney
+import spider as spi
 
 if __name__ == '__main__':
     url = 'https://data.eastmoney.com/bkzj/hy.html'
 
-    spider = SpiderForEastMoney(url)
+    s = spi.SpiderForEastMoney(url)
 
-    firstPageElements = spider.get_elements("//table[@style='display: table;']/tbody/tr")
+    firstPageElements = s.get_elements("//table[@style='display: table;']/tbody/tr")
 
     for ele in firstPageElements:
-        spider.format_dfcf_data(ele)
+        print(ele.text)
