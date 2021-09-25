@@ -52,8 +52,9 @@ def build_east_money_model(element=WebElement):
         )
 
     model = bk_trade.bk_trade_to_model(obj)
+    # model.create_table()
     print(json.dumps(model_to_dict(model), ensure_ascii=False))
-
+    model.save()
 
 # List[WebElement]
 def iteration_web_elements(elements):

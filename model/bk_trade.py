@@ -66,9 +66,9 @@ def parse_money(money_str: str) -> dict:
 
 # model
 
-mysql_db = MySQLDatabase('my_app', user='app', password='db_password',
-                         host='10.1.0.8', port=3306)
-
+mysql_db = MySQLDatabase('east_money', user='root', password='root',
+                         host='127.0.0.1', port=3306)
+mysql_db.connect()
 tbl = "t_bk_trade"
 
 
